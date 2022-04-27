@@ -4,6 +4,7 @@ import app from "./firebase.init";
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  sendEmailVerification,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import Form from "react-bootstrap/Form";
@@ -30,13 +31,23 @@ function App() {
     setRegistered(e.target.checked);
   };
 
+  const emailVarify = () =>{
+    sendEmailVerification(auth.currentUser)
+    .then(()=>{
+      console.log("Email verification sent");
+    })
+    .catch(error=>{
+      console.log(error);
+    })
+  }
+
   //Submit
   const handleFormSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.stopPropagation();
-      setError("akjfdkljakljakjfklajklf");
+      setError("Please, enter correct email");
       return;
     }
     //Regular Expression
@@ -60,6 +71,7 @@ function App() {
       createUserWithEmailAndPassword(auth, email, password)
         .then((result) => {
           const user = result.user;
+          emailVarify();
           console.log(user);
         })
         .catch((error) => {
